@@ -1,0 +1,7 @@
+    1  awk -F "\t" '$12=="Y"' amazon_reviews_us_Books_v1_02.tsv | cut -f 14 > ws8_temp/verified.txt
+    2  awk -F "\t" '$12=="N"' amazon_reviews_us_Books_v1_02.tsv | cut -f 14 > ws8_temp/unverified.txt
+    3  sed -r 's/\b(and(\s)?|or(\s)?|if(\s)?|in(\s)?|it(\s)?|the(\s)?)\b//g' ws8_temp/verified.txt | awk '!/<(\/)*[a-z]+(\s)*(\/)*>/' | tr -d '[:punct:]' | sed -r 's/\b\w{1,2}\b//g' | tr '[:upper:]' '[:lower:]' > ws8_temp/verified_sanitized.txt
+    4  sed -r 's/\b(and(\s)?|or(\s)?|if(\s)?|in(\s)?|it(\s)?|the(\s)?)\b//g' ws8_temp/unverified.txt | awk '!/<(\/)*[a-z]+(\s)*(\/)*>/' | tr -d '[:punct:]' | sed -r 's/\b\w{1,2}\b//g' | tr '[:upper:]' '[:lower:]'  > ws8_temp/unverified_sanitized.txt
+    5  sed -r 's/ /\n/g' ws8_temp/verified_sanitized.txt | awk '/\w+/' | sort | uniq -c | sort -k 1 -n -r | head -n 11 | awk '!/the/'
+    6  sed -r 's/ /\n/g' ws8_temp/unverified_sanitized.txt | awk '/\w+/' | sort | uniq -c | sort -k 1 -n -r | head -n 11 | awk '!/the/'
+    7  history > ws8/cmds.log
